@@ -5,7 +5,7 @@ Welcome to the MES Bootcamp Accelerator, a simplified resource for students of t
 
 Getting Started
 
-Clone the repository.
+Clone the repository. https://github.com/zackscriven/mba
 Install necessary dependencies (see requirements.txt).
 Configure your SQL database credentials in the provided Python scripts.
 Run the sample script(s) to confirm your database connection.
