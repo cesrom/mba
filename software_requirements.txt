@@ -1,0 +1,21 @@
+# =====================================================================
+# MES Bootcamp Accelerator - Required Software
+# =====================================================================
+
+# IIoT Platform: Ignition 8.1.44
+# https://inductiveautomation.com/downloads/ignition/8.1.44
+
+# Database: MySQL 8.0.40
+# https://dev.mysql.com/downloads/installer/
+
+# Database Admin Tool: MySQL Workbench 8.0.40
+# https://dev.mysql.com/downloads/workbench/
+
+# Code Editor: Visual Studio Code
+# https://code.visualstudio.com/Download
+
+# Python IDE: PyCharm Community Edition 2024.3.1.1
+# https://www.jetbrains.com/pycharm/download/
+
+# python -- version 3.13.0
+# pip -- version 22.0.0
