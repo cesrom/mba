@@ -1,0 +1,56 @@
+#* 4.0 Solutions LLC CONFIDENTIAL
+#* __________________
+#* 
+#*  [2015] - [2022] 4.0 Solutions LLC 
+#*  All Rights Reserved.
+#* 
+#* NOTICE:  All information contained herein is, and remains
+#* the property of 4.0 Solutions LLC and its suppliers,
+#* if any.  The intellectual and technical concepts contained
+#* herein are proprietary to 4.0 Solutions LLC
+#* and its suppliers and may be covered by U.S. and Foreign Patents,
+#* patents in process, and are protected by trade secret or copyright law.
+#* Dissemination of this information or reproduction of this material
+#* is strictly forbidden unless prior written permission is obtained
+#* from 4.0 Solutions LLC.
+
+mes_core Package
+
+	• mes_core (pkg)
+		○ count (mod)
+			§ storeCountHistory (fx)
+		○ logging (mod)
+			§ log (fx)
+		○ model (mod)
+			§ MESFilterResults (class)
+			§ MESFilter (class)
+			§ createFilter (fx)
+			§ loadMESObjects (fx)
+			§ loadMESObject (fx)
+			§ getEnterpriseID (fx)
+			§ getSiteID (fx)
+			§ getAreaID (fx)
+			§ getLineID (fx)
+			§ getCellID (fx)
+			§ getID (fx)
+		○ oee (mod)
+			§ calcQuality (fx)
+			§ calcAvailability (fx)
+			§ calcPerformance (fx)
+			§ getTagIDs (fx)
+			§ getGoodCount (fx)
+			§ getBadCount (fx)
+			§ getTotalCount (fx)
+			§ getUnplannedDowntimeSeconds (fx)
+			§ getPlannedDowntimeSeconds (fx)
+			§ getOee (fx)
+		○ order (mod)
+			§ addProductCode (fx)
+			§ updateProductCodeLineStatus (fx)
+			§ addWorkOrderEntry (fx)
+			§ updateWorkOrderEntry (fx)
+		○ run (mod)
+			§ calcFinishTime (fx)
+			§ updateRun (fx)
+		○ state (mod)
+            storeStateHistory (fx)
