@@ -44,6 +44,8 @@ Dependencies:
 
 import re
 
+from shared.mes_core.logging import log
+
 #default database name
 db = 'mes_core'
 
@@ -156,214 +158,102 @@ class MESFilter(object):
 
 def loadMESObjects(mesFilter, db=db):
     """
-    Loads MES objects based on the provided MESFilter.
+    Loads MES objects based on the specified filter.
 
     Args:
-        mesFilter (MESFilter): The filter object used to query MES objects.
-        db (str): The database to query from (default: db).
+        mesFilter (MESFilter): The filter object.
+        db (str): The database name.
 
     Returns:
-        MESFilterResults: Filtered results from the database.
+        MESFilterResults: Filtered results.
     """
-    results = system.db.runPrepQuery(
-        loadMESObjectsQueries[mesFilter.mesObjectType],
-        [],
-        db
-    )
-    return MESFilterResults(results)
-
-
-def loadMESObject(name, mesObjectType, db=db):
-    """
-    Loads a single MES object by name and type.
-
-    Args:
-        name (str): The name of the MES object to load.
-        mesObjectType (str): The type of MES object (e.g., 'Enterprise', 'Site').
-        db (str): The database to query from (default: db).
-
-    Returns:
-        dict: The first result matching the name and type.
-    """
-    query = loadMESObjectsQueries[mesObjectType]
-    query += "\n AND %s.name = ?" % mesObjectType[0].lower()
-    results = system.db.runPrepQuery(query, [name], db)
-    return MESFilterResults(results).results[0]
-
-
-modelPathPattern = re.compile(r"([^/]+)", re.I)
-
+    try:
+        results = system.db.runPrepQuery(
+            loadMESObjectsQueries[mesFilter.mesObjectType],
+            [],
+            db
+        )
+        return MESFilterResults(results)
+    except Exception as e:
+        log(f"Error loading MES objects: {e}", level='error')
+        raise
 
 def getEnterpriseID(modelPath, db=db):
     """
     Retrieves the Enterprise ID for a given model path.
 
     Args:
-        modelPath (str): The path to the Enterprise in the UNS.
-        db (str): The database to query from (default: db).
+        modelPath (str): Path to the Enterprise in the UNS.
+        db (str): Database name.
 
     Returns:
         int: The Enterprise ID.
     """
-    modelParts = modelPathPattern.findall(modelPath)
-    assert modelParts[0] == "OF", "Only one Enterprise is supported at this time ('OF')"
+    modelParts = re.findall(r"([^/]+)", modelPath)
     try:
-        return system.db.runPrepQuery("""
-            SELECT e.ID
-            FROM enterprise AS e
-            WHERE e.Name = ?
-        """, modelParts, db)[0][0]
+        return system.db.runPrepQuery(
+            "SELECT e.ID FROM enterprise AS e WHERE e.Name = ?",
+            [modelParts[0]],
+            db
+        )[0][0]
     except IndexError:
-        raise ValueError("Enterprise %s not found in model: %s" % (modelPath, str(modelParts)))
-
+        log(f"Enterprise '{modelParts[0]}' not found.", level='error')
+        raise ValueError(f"Enterprise '{modelParts[0]}' not found.")
+    except Exception as e:
+        log(f"Error in getEnterpriseID: {e}", level='error')
+        raise
 
 def getSiteID(modelPath, db=db):
     """
     Retrieves the Site ID for a given model path.
 
     Args:
-        modelPath (str): The path to the Site in the UNS.
-        db (str): The database to query from (default: db).
+        modelPath (str): Path to the Site in the UNS.
+        db (str): Database name.
 
     Returns:
         int: The Site ID.
     """
-    modelParts = modelPathPattern.findall(modelPath)
-    if modelParts[0] != "OF":
-        modelParts = ["OF"] + modelParts
+    modelParts = re.findall(r"([^/]+)", modelPath)
     try:
-        return system.db.runPrepQuery("""
-            SELECT s.ID
-            FROM enterprise AS e
-            INNER JOIN site AS s ON s.ParentID = e.ID
-            WHERE e.Name = ?
-              AND s.Name = ?
-        """, modelParts, db)[0][0]
+        return system.db.runPrepQuery(
+            """
+            SELECT s.ID 
+            FROM enterprise AS e 
+            INNER JOIN site AS s ON s.ParentID = e.ID 
+            WHERE e.Name = ? AND s.Name = ?
+            """,
+            modelParts[:2],
+            db
+        )[0][0]
     except IndexError:
-        raise ValueError("Site %s not found in model: %s" % (modelPath, str(modelParts)))
-
-def getAreaID(modelPath, db=db):
-    """
-    Retrieves the Area ID for a given model path.
-
-    Args:
-        modelPath (str): The path to the Area in the UNS.
-        db (str): The database to query from (default: db).
-
-    Returns:
-        int: The Area ID.
-    """
-    modelParts = modelPathPattern.findall(modelPath)
-    if modelParts[0] != "OF":
-        modelParts = ["OF"] + modelParts
-    try:
-        return system.db.runPrepQuery("""
-            SELECT a.ID
-            FROM enterprise AS e
-            INNER JOIN site AS s ON s.ParentID = e.ID
-            INNER JOIN area AS a ON a.ParentID = s.ID
-            WHERE e.Name = ?
-              AND s.Name = ?
-              AND a.Name = ?
-        """, modelParts, db)[0][0]
-    except IndexError:
-        raise ValueError("Area %s not found in model: %s" % (modelPath, str(modelParts)))
-
-
-def getLineID(modelPath, db=db):
-    """
-    Retrieves the Line ID for a given model path.
-
-    Args:
-        modelPath (str): The path to the Line in the UNS.
-        db (str): The database to query from (default: db).
-
-    Returns:
-        int: The Line ID.
-    """
-    modelParts = modelPathPattern.findall(modelPath)
-    if modelParts[0] != "OF":
-        modelParts = ["OF"] + modelParts
-    try:
-        return system.db.runPrepQuery("""
-            SELECT l.ID
-            FROM enterprise AS e
-            INNER JOIN site AS s ON s.ParentID = e.ID
-            INNER JOIN area AS a ON a.ParentID = s.ID
-            INNER JOIN line AS l ON l.ParentID = a.ID
-            WHERE e.Name = ?
-              AND s.Name = ?
-              AND a.Name = ?
-              AND l.Name = ?
-        """, modelParts, db)[0][0]
-    except IndexError:
-        raise ValueError("Line %s not found in model: %s" % (modelPath, str(modelParts)))
-
-def getCellID(modelPath, db=db):
-    """
-    Retrieves the Cell ID for a given model path.
-
-    Args:
-        modelPath (str): The path to the Cell in the UNS.
-        db (str): The database to query from (default: "mes_core").
-
-    Returns:
-        int: The Cell ID.
-
-    Raises:
-        ValueError: If the cell is not found in the model.
-    """
-    modelParts = modelPathPattern.findall(modelPath)
-    if modelParts[0] != "OF":
-        modelParts = ["OF"] + modelParts
-    try:
-        return system.db.runPrepQuery("""
-            SELECT c.ID
-            FROM enterprise AS e
-            INNER JOIN site AS s ON s.ParentID = e.ID
-            INNER JOIN area AS a ON a.ParentID = s.ID
-            INNER JOIN line AS l ON l.ParentID = a.ID
-            INNER JOIN cell AS c ON c.ParentID = l.ID
-            WHERE e.Name = ?
-              AND s.Name = ?
-              AND a.Name = ?
-              AND l.Name = ?
-              AND c.Name = ?
-        """, modelParts, db)[0][0]
-    except IndexError:
-        raise ValueError("Cell %s not found in model: %s" % (modelPath, str(modelParts)))
+        log(f"Site '{modelParts[1]}' not found under Enterprise '{modelParts[0]}'.", level='error')
+        raise ValueError(f"Site '{modelParts[1]}' not found under Enterprise '{modelParts[0]}'.")
+    except Exception as e:
+        log(f"Error in getSiteID: {e}", level='error')
+        raise
 
 def getID(modelPath, db=db):
     """
-    Retrieves the ID for the specified model path by identifying its type (Enterprise, Site, Area, Line, or Cell)
-    and calling the corresponding function.
+    Retrieves the ID for the specified model path by determining its type.
 
     Args:
-        modelPath (str): The path to the entity in the UNS.
-        db (str): The database to query from (default: defined at the top of the script).
+        modelPath (str): The model path.
+        db (str): Database name.
 
     Returns:
         int: The ID for the specified model path.
-
-    Raises:
-        NotImplementedError: If the model path doesn't conform to expected direct relationships.
     """
-    modelParts = modelPathPattern.findall(modelPath)
-
-    # Lookup table for determining the correct ID retrieval function
+    modelParts = re.findall(r"([^/]+)", modelPath)
     modelLookup = {
         1: getEnterpriseID,
         2: getSiteID,
-        3: getAreaID,
-        4: getLineID,
-        5: getCellID
     }
-
     try:
-        # Use the length of modelParts to determine which function to call
         return modelLookup[len(modelParts)](modelPath, db=db)
     except KeyError:
-        raise NotImplementedError(
-            'Model currently only supports direct relationships like Enterprise/Site/Area/Line/Cell'
-        )
-
+        log(f"Unsupported model path structure: {modelPath}", level='error')
+        raise NotImplementedError("Only Enterprise and Site are supported.")
+    except Exception as e:
+        log(f"Error in getID: {e}", level='error')
+        raise

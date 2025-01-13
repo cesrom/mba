@@ -108,7 +108,7 @@ def calcPerformance(totalCountPath, targetCountPath, oeePerformancePath):
     system.tag.writeBlocking([oeePerformancePath], [performance])
     return performance
 
-def getTagIDs(lineID, db='mes_core'):
+def getTagIDs(lineID, db=db):
     '''
     Retrieves a list of Tag IDs associated with the specified Line ID.
 
@@ -239,3 +239,135 @@ def getBadCount(badCountPath, startTimePath, endTimePath, tagID, countTypeID, db
         log(f"Error in getBadCount: {str(e)}", 'error')
         return -1
 
+def getTotalCount(db=db, lineID=None, totalCountPath=None, startTimePath=None, endTimePath=None):
+    """
+    Retrieves the total count of items within a specified time range.
+
+    Args:
+        db (str): The database name (default: db).
+        lineID (str): The tag path for the line ID.
+        totalCountPath (str): The tag path to write the total count.
+        startTimePath (str): The tag path for the start time.
+        endTimePath (str): The tag path for the end time.
+
+    Returns:
+        int: Total count.
+    """
+    # Read all necessary tags in a single call
+    tagValues = system.tag.readBlocking([lineID, startTimePath, endTimePath])
+    lineIDValue = tagValues[0].value
+    startTime = tagValues[1].value
+    endTime = tagValues[2].value
+
+    tagIDs = getTagIDs(lineIDValue)
+    tagIDs = str(tagIDs).replace('[', '(').replace(']', ')').replace(' ', '')
+    query = '''
+        SELECT SUM(Count) FROM counthistory
+        WHERE countTypeID NOT IN (1, 4) 
+        AND TimeStamp BETWEEN ? AND ?
+        AND TagID IN %s
+    ''' % tagIDs
+
+    data = system.db.runPrepQuery(query, [startTime, endTime], db)
+    totalCount = 0 if not data or data[0][0] is None else data[0][0]
+    system.tag.writeBlocking([totalCountPath], [totalCount])
+    return totalCount
+
+
+def getUnplannedDowntimeSeconds(db=db, startTimePath=None, unplannedDowntimePath=None, lineID=None):
+    """
+    Retrieves the total unplanned downtime in seconds.
+
+    Args:
+        db (str): The database name (default: db).
+        startTimePath (str): The tag path for the start time.
+        unplannedDowntimePath (str): The tag path to write the downtime.
+        lineID (str): The tag path for the line ID.
+
+    Returns:
+        int: Unplanned downtime in seconds.
+    """
+    # Read all necessary tags in a single call
+    tagValues = system.tag.readBlocking([startTimePath, lineID])
+    startTime = tagValues[0].value
+    lineIDValue = tagValues[1].value
+
+    query = '''
+        SELECT SUM(TIME_TO_SEC(TIMEDIFF(s.EndDateTime, s.StartDateTime))) AS 'Total in Seconds'
+        FROM statehistory s
+        LEFT JOIN statereason st ON s.StateReasonID = st.ID
+        WHERE st.RecordDowntime = 1 
+        AND s.LineID = ? 
+        AND StartDateTime > ? 
+        AND (EndDateTime <= CURRENT_TIMESTAMP() OR Active = 1)
+    '''
+    data = system.db.runPrepQuery(query, [lineIDValue, startTime], db)
+    unplannedDowntime = 0 if not data or data[0][0] is None else data[0][0]
+    system.tag.writeBlocking([unplannedDowntimePath], [unplannedDowntime])
+    return unplannedDowntime
+
+
+def getPlannedDowntimeSeconds(db=db, startTimePath=None, plannedDowntimePath=None, lineID=None):
+    """
+    Retrieves the total planned downtime in seconds.
+
+    Args:
+        db (str): The database name (default: db).
+        startTimePath (str): The tag path for the start time.
+        plannedDowntimePath (str): The tag path to write the downtime.
+        lineID (str): The tag path for the line ID.
+
+    Returns:
+        int: Planned downtime in seconds.
+    """
+    # Read all necessary tags in a single call
+    tagValues = system.tag.readBlocking([startTimePath, lineID])
+    startTime = tagValues[0].value
+    lineIDValue = tagValues[1].value
+
+    query = '''
+        SELECT SUM(TIME_TO_SEC(TIMEDIFF(s.EndDateTime, s.StartDateTime))) AS 'Total in Seconds'
+        FROM statehistory s
+        LEFT JOIN statereason st ON s.StateReasonID = st.ID
+        WHERE st.PlannedDowntime = 1 
+        AND s.LineID = ? 
+        AND StartDateTime > ? 
+        AND (EndDateTime <= CURRENT_TIMESTAMP() OR Active = 1)
+    '''
+    data = system.db.runPrepQuery(query, [lineIDValue, startTime], db)
+    plannedDowntime = 0 if not data or data[0][0] is None else data[0][0]
+    system.tag.writeBlocking([plannedDowntimePath], [plannedDowntime])
+    return plannedDowntime
+
+
+def getOee(parentPath):
+    """
+    Retrieves and calculates OEE metrics.
+
+    Args:
+        parentPath (str): The parent path to the OEE tags.
+
+    Returns:
+        None
+    """
+    # Declare all tag paths
+    lineID = f"{parentPath}/OEE/ID"
+    unplannedDowntimePath = f"{parentPath}/OEE/Unplanned Downtime"
+    totalTimePath = f"{parentPath}/OEE/Total Time"
+    totalCountPath = f"{parentPath}/OEE/Total Count"
+    targetCountPath = f"{parentPath}/OEE/Target Count"
+    startTimePath = f"{parentPath}/OEE/Start Time"
+    runTimePath = f"{parentPath}/OEE/Runtime"
+    plannedDowntimePath = f"{parentPath}/OEE/Planned Downtime"
+    oeeQualityPath = f"{parentPath}/OEE/OEE Quality"
+    oeePerformancePath = f"{parentPath}/OEE/OEE Performance"
+    oeeAvailabilityPath = f"{parentPath}/OEE/OEE Availability"
+    goodCountPath = f"{parentPath}/OEE/Good Count"
+    badCountPath = f"{parentPath}/OEE/Bad Count"
+
+    # Perform calculations and write tag updates
+    getUnplannedDowntimeSeconds(db, startTimePath, unplannedDowntimePath, lineID)
+    getPlannedDowntimeSeconds(db, startTimePath, plannedDowntimePath, lineID)
+    calcQuality(totalCountPath, goodCountPath, oeeQualityPath)
+    calcAvailability(runTimePath, totalTimePath, oeeAvailabilityPath)
+    calcPerformance(totalCountPath, targetCountPath, oeePerformancePath)

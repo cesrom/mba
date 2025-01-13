@@ -1,0 +1,30 @@
+UDT and Namespace Development
+
+	• UDT Dev
+		• mes_core
+			○ Line
+			○ Count Dispatch
+			○ OEE-Downtime
+			○ Query Dispatch
+			○ UI
+	• Namespace Dev
+		• Enterprise
+			○ Site
+				§ Area
+					® Line
+						◊ Line UDT
+						◊ Edge UDT
+						◊ UI UDT
+	• **Example Namespace**
+		• Enterprise
+			○ Site
+				§ Area
+					® Line
+						◊ Line
+							} Dispatch (Query Dispatch)
+								– OEE Infeed (Count Dispatch)
+								– OEE Outfeed (Count Dispatch)
+								– OEE Waste (Count Dispatch)
+							} OEE (OEE-Downtime)
+						◊ Edge (Physical Asset UDT)
+                        ◊ UI (UI UDT)
