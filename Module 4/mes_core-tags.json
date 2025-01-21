@@ -1,0 +1,161 @@
+{
+  "name": "mes_core",
+  "tagType": "Folder",
+  "tags": [
+    {
+      "name": "Count Dispatch",
+      "parameters": {
+        "lineID": {
+          "dataType": "Integer",
+          "value": {
+            "bindType": "parameter",
+            "binding": "{lineID}"
+          }
+        },
+        "dbConnection": {
+          "dataType": "String",
+          "value": {
+            "bindType": "parameter",
+            "binding": "{dbConnection}"
+          }
+        }
+      },
+      "tagType": "UdtType",
+      "tags": [
+        {
+          "valueSource": "expr",
+          "name": "RunID",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "name": "CountTypeID",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Boolean",
+          "name": "Enable",
+          "value": true,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "name": "TagID",
+          "value": -1,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "name": "LastCount",
+          "value": 0,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "expr",
+          "name": "Count",
+          "tagType": "AtomicTag"
+        }
+      ]
+    },
+    {
+      "name": "Line",
+      "parameters": {
+        "Line Name": {
+          "dataType": "String"
+        },
+        "Line ID": {
+          "dataType": "Integer"
+        }
+      },
+      "tagType": "UdtType",
+      "tags": [
+        {
+          "valueSource": "expr",
+          "name": "Outfeed",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Boolean",
+          "name": "Manual MES",
+          "value": false,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "name": "Waste",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Boolean",
+          "name": "Collect Data",
+          "value": false,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "name": "Rate Setpoint",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "expr",
+          "expression": "{Line Name}",
+          "name": "Line Name",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "expr",
+          "name": "Run Time",
+          "tagType": "AtomicTag",
+          "engUnit": "Seconds"
+        },
+        {
+          "valueSource": "expr",
+          "expression": "now()",
+          "dataType": "DateTime",
+          "name": "Current Time",
+          "formatString": "yyyy-MM-dd h:mm:ss aa",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "expr",
+          "name": "State",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "DateTime",
+          "name": "Start Time",
+          "formatString": "yyyy-MM-dd h:mm:ss aa",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Boolean",
+          "name": "Run Enabled",
+          "value": false,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "expr",
+          "dataType": "Float4",
+          "name": "Cycle Time",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "expr",
+          "expression": "{Line ID}",
+          "name": "Line ID",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "expr",
+          "name": "Infeed",
+          "tagType": "AtomicTag"
+        }
+      ]
+    }
+  ]
+}
