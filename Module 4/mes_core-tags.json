@@ -59,17 +59,128 @@
       ]
     },
     {
-      "name": "Line",
+      "name": "Query Dispatch",
+      "typeId": "",
       "parameters": {
-        "Line Name": {
-          "dataType": "String"
+        "dbConnection": {
+          "dataType": "String",
+          "value": {
+            "bindType": "parameter",
+            "binding": "{dbConnection}"
+          }
         },
-        "Line ID": {
-          "dataType": "Integer"
+        "lineID": {
+          "dataType": "Integer",
+          "value": {
+            "bindType": "parameter",
+            "binding": "{lineID}"
+          }
         }
       },
       "tagType": "UdtType",
       "tags": [
+        {
+          "valueSource": "expr",
+          "name": "Line State",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "expr",
+          "expression": "{lineID}",
+          "name": "LineID",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "DateTime",
+          "name": "State Start Time",
+          "formatString": "yyyy-MM-dd h:mm:ss aa",
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "expr",
+          "name": "State Run Time",
+          "tagType": "AtomicTag",
+          "engUnit": "Seconds"
+        },
+        {
+          "valueSource": "memory",
+          "dataType": "Boolean",
+          "name": "Enable",
+          "value": true,
+          "tagType": "AtomicTag"
+        },
+        {
+          "valueSource": "expr",
+          "name": "RunID",
+          "tagType": "AtomicTag"
+        },
+        {
+          "datasource": {
+            "bindType": "parameter",
+            "binding": "{dbConnection}"
+          },
+          "valueSource": "db",
+          "dataType": "DataSet",
+          "name": "State Reason",
+          "tagType": "AtomicTag"
+        }
+      ]
+    },
+    {
+      "name": "Line",
+      "parameters": {
+        "line": {
+          "dataType": "String"
+        },
+        "lineID": {
+          "dataType": "Integer"
+        },
+        "dbConnection": {
+          "dataType": "String",
+          "value": "mes_core"
+        },
+        "Units": {
+          "dataType": "String"
+        }
+      },
+      "tagType": "UdtType",
+      "tags": [
+        {
+          "name": "Dispatch",
+          "typeId": "mes_core/Query Dispatch",
+          "tagType": "UdtInstance",
+          "tags": [
+            {
+              "name": "State Start Time",
+              "tagType": "AtomicTag"
+            },
+            {
+              "name": "Enable",
+              "tagType": "AtomicTag"
+            },
+            {
+              "name": "LineID",
+              "tagType": "AtomicTag"
+            },
+            {
+              "name": "RunID",
+              "tagType": "AtomicTag"
+            },
+            {
+              "name": "State Run Time",
+              "tagType": "AtomicTag"
+            },
+            {
+              "name": "Line State",
+              "tagType": "AtomicTag"
+            },
+            {
+              "name": "State Reason",
+              "tagType": "AtomicTag"
+            }
+          ]
+        },
         {
           "valueSource": "expr",
           "name": "Outfeed",
@@ -101,7 +212,8 @@
         },
         {
           "valueSource": "expr",
-          "expression": "{Line Name}",
+          "expression": "{line}",
+          "dataType": "String",
           "name": "Line Name",
           "tagType": "AtomicTag"
         },
@@ -146,7 +258,7 @@
         },
         {
           "valueSource": "expr",
-          "expression": "{Line ID}",
+          "expression": "{lineID}",
           "name": "Line ID",
           "tagType": "AtomicTag"
         },
