@@ -30,6 +30,7 @@ duplicates exist.
 db = 'mes_core'
 
 from shared.mes_core.model import getLineID
+from shared.mes_core.logging import log
 
 # Function to add or update a product code
 def addProductCode(productCode, description, disable=0, db=db):
@@ -46,17 +47,21 @@ def addProductCode(productCode, description, disable=0, db=db):
     Returns:
     - The primary key of the inserted or updated product code.
     '''
-    query = """
-        INSERT INTO productcode (ProductCode, Description, Disable, TimeStamp)
-        VALUES (?, ?, ?, NOW())
-        ON DUPLICATE KEY UPDATE
-            ProductCode = VALUES(ProductCode),
-            Description = VALUES(Description),
-            Disable = VALUES(Disable),
-            TimeStamp = NOW()
-    """
-    key = system.db.runPrepUpdate(query, [productCode, description, disable], db, getKey=1)
-    return key
+    try:
+        query = """
+            INSERT INTO productcode (ProductCode, Description, Disable, TimeStamp)
+            VALUES (?, ?, ?, NOW())
+            ON DUPLICATE KEY UPDATE
+                ProductCode = VALUES(ProductCode),
+                Description = VALUES(Description),
+                Disable = VALUES(Disable),
+                TimeStamp = NOW()
+        """
+        key = system.db.runPrepUpdate(query, [productCode, description, disable], db, getKey=1)
+        return key
+    except Exception as e:
+        log("Error in addProductCode: {}".format(str(e)), 'error')
+        return None
 
 # Function to update the product code line status
 def updateProductCodeLineStatus(productCode, modelPath, enable=True, db=db):
@@ -104,8 +109,10 @@ def updateProductCodeLineStatus(productCode, modelPath, enable=True, db=db):
             """, [productCodeID, lineID, enable], db)
 
         return 1
-    except:
+    except Exception as e:
+        log("Error in updateProductCodeLineStatus: {}".format(str(e)), 'error')
         return 0
+
 
 # Function to add a work order entry
 def addWorkOrderEntry(workOrder, productCode, quantity, db=db):
@@ -122,21 +129,25 @@ def addWorkOrderEntry(workOrder, productCode, quantity, db=db):
     Returns:
     - None.
     '''
-    # Retrieve the product code ID
-    pcID = system.db.runScalarPrepQuery("""
-        SELECT ID
-        FROM productcode
-        WHERE ProductCode = ?
-    """, [productCode], db)
+    try:
+        # Retrieve the product code ID
+        pcID = system.db.runScalarPrepQuery("""
+            SELECT ID
+            FROM productcode
+            WHERE ProductCode = ?
+        """, [productCode], db)
 
-    # Insert or update the work order entry
-    query = """
-        INSERT INTO workorder (WorkOrder, Quantity, Closed, Hide, TimeStamp, ProductCodeID, ProductCode)
-        VALUES (?, ?, 0, 0, NOW(), ?, ?)
-        ON DUPLICATE KEY UPDATE
-            Quantity = VALUES(Quantity),
-            ProductCodeID = VALUES(ProductCodeID),
-            ProductCode = VALUES(ProductCode),
-            TimeStamp = NOW()
-    """
-    system.db.runPrepUpdate(query, [workOrder, quantity, pcID, productCode], db)
+        # Insert or update the work order entry
+        query = """
+            INSERT INTO workorder (WorkOrder, Quantity, Closed, Hide, TimeStamp, ProductCodeID, ProductCode)
+            VALUES (?, ?, 0, 0, NOW(), ?, ?)
+            ON DUPLICATE KEY UPDATE
+                Quantity = VALUES(Quantity),
+                ProductCodeID = VALUES(ProductCodeID),
+                ProductCode = VALUES(ProductCode),
+                TimeStamp = NOW()
+        """
+        system.db.runPrepUpdate(query, [workOrder, quantity, pcID, productCode], db)
+    except Exception as e:
+        log("Error in addWorkOrderEntry: {}".format(str(e)), 'error')
+        return 0

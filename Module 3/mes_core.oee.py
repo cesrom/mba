@@ -188,7 +188,7 @@ def getGoodCount(lineID, goodCountPath, startTimePath, endTimePath, tagID, count
     except Exception as e:
         # Log the exception for debugging
         from shared.mes_core.logging import log
-        log(f"Error in getGoodCount: {str(e)}", 'error')
+        log("Error in getGoodCount: {}".format(str(e)), 'error')
         return 0
 
 def getBadCount(badCountPath, startTimePath, endTimePath, tagID, countTypeID, db=db):
@@ -236,7 +236,7 @@ def getBadCount(badCountPath, startTimePath, endTimePath, tagID, countTypeID, db
     except Exception as e:
         # Log any errors
         from shared.mes_core.logging import log
-        log(f"Error in getBadCount: {str(e)}", 'error')
+        log("Error in getBadCount: {}".format(str(e)), 'error')
         return -1
 
 def getTotalCount(db=db, lineID=None, totalCountPath=None, startTimePath=None, endTimePath=None):

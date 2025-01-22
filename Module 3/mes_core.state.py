@@ -53,28 +53,38 @@ def storeStateHistory(reasonCode, lineID, db=db):
     from datetime import datetime
     import time
 
-    # Current timestamp
-    stamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    try:
+    
+        # Current timestamp
+        stamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # Retrieve reasonID and reasonName based on reasonCode and lineID
-    data = system.db.runPrepQuery(
-        'SELECT ID, ReasonName FROM statereason WHERE ReasonCode = ? AND ParentID = ?',
-        [reasonCode, lineID],
-        db
-    )
+        # Retrieve reasonID and reasonName based on reasonCode and lineID
+        data = system.db.runPrepQuery(
+            'SELECT ID, ReasonName FROM statereason WHERE ReasonCode = ? AND ParentID = ?',
+            [reasonCode, lineID],
+            db
+        )
 
-    for row in data:
-        reasonID = row[0]
-        reasonName = row[1]
+        if len(data) > 0:
+            reasonID, reasonName = data[0][0], data[0][1]
+        else:
+            system.util.getLogger("storeStateHistory").warn("No matching reason found for reasonCode: {}, lineID: {}".format(reasonCode, lineID))
+            return
 
-    # Update the end time of the previous state history entry
-    endQuery = 'UPDATE statehistory SET EndDateTime = ? WHERE LineID = ? AND EndDateTime IS NULL'
-    system.db.runSFPrepUpdate(endQuery, [stamp, lineID], [db])
+        # Update the end time of the previous state history entry
+        endQuery = 'UPDATE statehistory SET EndDateTime = ? WHERE LineID = ? AND EndDateTime IS NULL'
+        system.db.runSFPrepUpdate(endQuery, [stamp, lineID], [db])
 
-    # Wait briefly before inserting the new state (simulate realistic processing delay)
-    time.sleep(2)
+        # Wait briefly before inserting the new state (simulate realistic processing delay)
+        time.sleep(2)
 
-    # Insert a new state history entry
-    query = ('INSERT INTO statehistory (StateReasonID, ReasonName, LineID, ReasonCode, StartDateTime) '
-             'VALUES (?, ?, ?, ?, ?)')
-    system.db.runSFPrepUpdate(query, [reasonID, reasonName, lineID, reasonCode, stamp], [db])
+        # Insert a new state history entry
+        query = ('INSERT INTO statehistory (StateReasonID, ReasonName, LineID, ReasonCode, StartDateTime) '
+                'VALUES (?, ?, ?, ?, ?)')
+        system.db.runSFPrepUpdate(query, [reasonID, reasonName, lineID, reasonCode, stamp], [db])
+
+        # info logging for debugging
+        system.util.getLogger("storeStateHistory").info("New state stored successfully for reasonCode: {}, lineID: {}".format(reasonCode, lineID))
+
+    except Exception as e:
+        system.util.getLogger("storeStateHistory").error("Error storing state history: {}".format(str(e)))

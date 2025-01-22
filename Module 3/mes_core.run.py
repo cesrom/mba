@@ -59,7 +59,7 @@ def calcFinishTime(parentPath, db=db):
     """
 
     # Retrieve run ID from the tag path
-    runID = system.tag.readBlocking([f"{parentPath}/OEE/RunID"])[0].value
+    runID = system.tag.readBlocking(["{}/OEE/RunID".format(parentPath)])[0].value
 
     if runID != -1:
         # Query the database for run data
@@ -69,9 +69,9 @@ def calcFinishTime(parentPath, db=db):
             quantity = row['Quantity']
 
             # Retrieve tag values for good parts and production rate
-            goodParts = system.tag.readBlocking([f"{parentPath}/OEE/Good Count"])[0].value
+            goodParts = system.tag.readBlocking(["{}/OEE/Good Count".format(parentPath)])[0].value
             remainingParts = quantity - goodParts
-            productionRate = system.tag.readBlocking([f"{parentPath}/OEE/Production Rate"])[0].value
+            productionRate = system.tag.readBlocking(["{}/OEE/Production Rate".format(parentPath)])[0].value
 
             # Calculate remaining hours to complete the production
             if productionRate > 0:
@@ -122,18 +122,18 @@ def updateRun(runID, db=db):
         data = system.db.runPrepQuery(lineQuery, [runID], db)
 
         if not data:
-            log(f"No data found for RunID: {runID}. Exiting function.", "warn")
+            log("No data found for RunID: {}".format(runID), "warn")
             return 0
 
         for row in data:
             lineID = row['Line ID']
             linePath = row['Line Path']
 
-        # log(f"LineID: {lineID}, LinePath: {linePath}", "info")  # Use for debugging
+        # log("LineID: {}, LinePath: {}".format(lineID, linePath), "info")  # Use for debugging
 
         # Calculate Finish Time
         finishTime = calcFinishTime(linePath)
-        # log(f"Calculated FinishTime: {finishTime}", "info")  # Use for debugging
+        # log("Calculated FinishTime: {}".format(finishTime), "info")  # Use for debugging
 
         # Get current Timestamp and format
         timeStamp = datetime.now()
@@ -203,9 +203,9 @@ def updateRun(runID, db=db):
                 unplannedDowntime, plannedDowntime, totalTime, str(timeStamp), 0, str(finishTime), runID]
 
         system.db.runPrepUpdate(query, args, db)
-        # log(f"Run {runID} updated successfully.", "info")  # Use for debugging
+        # log("Run {} updated successfully.".format(runID), "info")  # Use for debugging
         return 1
 
     except Exception as e:
-        log(f"Error updating Run {runID}: {str(e)}", "error")
+        log("Error updating Run {}: {}".format(runID, str(e)), "error")
         return 0

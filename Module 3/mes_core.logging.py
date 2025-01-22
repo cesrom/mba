@@ -55,5 +55,9 @@ def log(message, level):
         logger.trace(message)
     else:
         # Handle unsupported log levels
-        logger.warn(f"Unsupported log level: {level}. Defaulting to 'info'.")
+        # logger.warn(f"Unsupported log level: {level}. Defaulting to 'info'.") # deleted f-string
+
+        # using .format() instead of f-string
+        logger.warn("Unsupported log level: {}. Defaulting to 'info'.".format(level))
+
         logger.info(message)
