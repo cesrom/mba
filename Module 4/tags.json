@@ -1,0 +1,335 @@
+{
+    "name": "Enterprise",
+    "tagType": "Folder",
+    "tags": [
+      {
+        "name": "Site",
+        "tagType": "Folder",
+        "tags": [
+          {
+            "name": "Area",
+            "tagType": "Folder",
+            "tags": [
+              {
+                "name": "Line 1",
+                "tagType": "Folder",
+                "tags": [
+                  {
+                    "name": "Line",
+                    "typeId": "mes_core/Line",
+                    "parameters": {
+                      "line": {
+                        "dataType": "String",
+                        "value": "Line 1"
+                      },
+                      "lineID": {
+                        "dataType": "Integer",
+                        "value": 1
+                      },
+                      "Units": {
+                        "dataType": "String",
+                        "value": "parts"
+                      }
+                    },
+                    "tagType": "UdtInstance",
+                    "tags": [
+                      {
+                        "name": "Line ID",
+                        "tagType": "AtomicTag"
+                      },
+                      {
+                        "name": "Collect Data",
+                        "tagType": "AtomicTag"
+                      },
+                      {
+                        "name": "Cycle Time",
+                        "tagType": "AtomicTag"
+                      },
+                      {
+                        "name": "State",
+                        "tagType": "AtomicTag"
+                      },
+                      {
+                        "name": "Infeed",
+                        "tagType": "AtomicTag"
+                      },
+                      {
+                        "name": "Waste",
+                        "tagType": "AtomicTag"
+                      },
+                      {
+                        "name": "Outfeed",
+                        "tagType": "AtomicTag"
+                      },
+                      {
+                        "name": "Run Time",
+                        "tagType": "AtomicTag"
+                      },
+                      {
+                        "name": "Run Enabled",
+                        "tagType": "AtomicTag"
+                      },
+                      {
+                        "name": "Rate Setpoint",
+                        "tagType": "AtomicTag"
+                      },
+                      {
+                        "name": "Dispatch",
+                        "tagType": "UdtInstance",
+                        "tags": [
+                          {
+                            "name": "Line State",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "State Start Time",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "State Reason",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "Enable",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "OEE Outfeed",
+                            "tagType": "UdtInstance",
+                            "tags": [
+                              {
+                                "name": "Enable",
+                                "tagType": "AtomicTag"
+                              },
+                              {
+                                "name": "TagID",
+                                "tagType": "AtomicTag"
+                              },
+                              {
+                                "name": "RunID",
+                                "tagType": "AtomicTag"
+                              },
+                              {
+                                "name": "CountTypeID",
+                                "tagType": "AtomicTag"
+                              },
+                              {
+                                "name": "Count",
+                                "tagType": "AtomicTag"
+                              },
+                              {
+                                "name": "LastCount",
+                                "tagType": "AtomicTag"
+                              }
+                            ]
+                          },
+                          {
+                            "name": "RunID",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "State Run Time",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "LineID",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "OEE Waste",
+                            "tagType": "UdtInstance",
+                            "tags": [
+                              {
+                                "name": "LastCount",
+                                "tagType": "AtomicTag"
+                              },
+                              {
+                                "name": "Enable",
+                                "tagType": "AtomicTag"
+                              },
+                              {
+                                "name": "CountTypeID",
+                                "tagType": "AtomicTag"
+                              },
+                              {
+                                "name": "Count",
+                                "tagType": "AtomicTag"
+                              },
+                              {
+                                "name": "TagID",
+                                "tagType": "AtomicTag"
+                              },
+                              {
+                                "name": "RunID",
+                                "tagType": "AtomicTag"
+                              }
+                            ]
+                          },
+                          {
+                            "name": "OEE Infeed",
+                            "tagType": "UdtInstance",
+                            "tags": [
+                              {
+                                "name": "LastCount",
+                                "tagType": "AtomicTag"
+                              },
+                              {
+                                "name": "RunID",
+                                "tagType": "AtomicTag"
+                              },
+                              {
+                                "name": "Count",
+                                "tagType": "AtomicTag"
+                              },
+                              {
+                                "name": "TagID",
+                                "tagType": "AtomicTag"
+                              },
+                              {
+                                "name": "CountTypeID",
+                                "tagType": "AtomicTag"
+                              },
+                              {
+                                "name": "Enable",
+                                "tagType": "AtomicTag"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "name": "OEE",
+                        "tagType": "UdtInstance",
+                        "tags": [
+                          {
+                            "name": "Start Time",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "Target Count",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "Run Time",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "Units",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "Production Rate",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "Estimated Finish Time",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "Quantity",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "OEE",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "OEE Quality",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "Standard Rate",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "Setup Minutes",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "Planned Downtime",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "Schedule ID",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "OEE Performance",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "WorkOrder",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "Total Count",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "OEE Availability",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "Scheduled Rate",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "Total Time",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "Unplanned Downtime",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "Bad Count",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "End Time",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "Current Time",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "RunID",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "Good Count",
+                            "tagType": "AtomicTag"
+                          },
+                          {
+                            "name": "ID",
+                            "tagType": "AtomicTag"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "Start Time",
+                        "tagType": "AtomicTag"
+                      },
+                      {
+                        "name": "Line Name",
+                        "tagType": "AtomicTag"
+                      },
+                      {
+                        "name": "Manual MES",
+                        "tagType": "AtomicTag"
+                      },
+                      {
+                        "name": "Current Time",
+                        "tagType": "AtomicTag"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }

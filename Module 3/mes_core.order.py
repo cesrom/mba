@@ -29,8 +29,8 @@ duplicates exist.
 #default database name
 db = 'mes_core'
 
-from shared.mes_core.model import getLineID
-from shared.mes_core.logging import log
+from mes_core.model import getLineID
+from mes_core.logging import log
 
 # Function to add or update a product code
 def addProductCode(productCode, description, disable=0, db=db):

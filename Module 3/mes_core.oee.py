@@ -28,7 +28,7 @@ This script handles OEE (Overall Equipment Effectiveness) calculations for the M
 db = 'mes_core'
 
 # Import the logging module
-from shared.mes_core.logging import log
+from mes_core.logging import log
 
 # Log for debugging purposes (commented for production)
 # log('MES Core: Calculating OEE', 'info')

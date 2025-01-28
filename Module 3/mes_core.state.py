@@ -76,7 +76,7 @@ def storeStateHistory(reasonCode, lineID, db=db):
         system.db.runSFPrepUpdate(endQuery, [stamp, lineID], [db])
 
         # Wait briefly before inserting the new state (simulate realistic processing delay)
-        time.sleep(2)
+        time.sleep(2) 
 
         # Insert a new state history entry
         query = ('INSERT INTO statehistory (StateReasonID, ReasonName, LineID, ReasonCode, StartDateTime) '

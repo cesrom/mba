@@ -44,7 +44,7 @@ Dependencies:
 
 import re
 
-from shared.mes_core.logging import log
+from mes_core.logging import log
 
 #default database name
 db = 'mes_core'
