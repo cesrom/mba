@@ -1,0 +1,16 @@
+
+-- adding default value to TimeStamp column
+ALTER TABLE `mes_core`.`enterprise` 
+CHANGE COLUMN `TimeStamp` `TimeStamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ;
+
+ALTER TABLE `mes_core`.`site` 
+CHANGE COLUMN `TimeStamp` `TimeStamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ;
+
+ALTER TABLE `mes_core`.`area` 
+CHANGE COLUMN `TimeStamp` `TimeStamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ;
+
+ALTER TABLE `mes_core`.`line` 
+CHANGE COLUMN `TimeStamp` `TimeStamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ;
+
+ALTER TABLE `mes_core`.`cell` 
+CHANGE COLUMN `TimeStamp` `TimeStamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ;
